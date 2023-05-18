@@ -8,7 +8,7 @@ import { version } from '../package.json'; // in tsconfig.json,  resolveJsonModu
 
 const port = config.get<number>("port");
 const host = config.get<string>("host");
-const corsOrigin = config.get<string>("corsOrigin")
+const corsOrigin = config.get<string>("corsOrigin");
 console.log(corsOrigin);
 
 const app = express();

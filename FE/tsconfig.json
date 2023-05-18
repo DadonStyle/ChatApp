@@ -15,7 +15,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "types": ["vite/client"],
+    "types": ["vite/client", "node"],
     "composite": true,
   },
   "include": ["src", "config", "context", "src/main.tsx", "vite-env.d.ts", "src/env.d.ts"],
