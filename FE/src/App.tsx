@@ -1,34 +1,38 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useRef } from 'react';
 import './App.css'
+import { useSockets } from './context/socket.context';
+import RoomsContainer from './containers/Rooms';
+import MessagesContainer from './containers/Messages';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const { socket, userName, setUserName  } = useSockets();
+  const userNameRef = useRef<any>(null);
+
+  const handleSetUserName = () => {
+    const userNameInput = userNameRef.current.value;
+    if (!userNameInput) {
+      return;
+    }
+    setUserName(userNameInput);
+
+    localStorage.setItem("user", userNameInput);
+  }
 
   return (
+    <div>
+    {!userName &&
+    <div>
+      <input type='text' placeholder='User Name' ref={userNameRef} />
+      <button type='submit' onClick={handleSetUserName}>Save</button>
+    </div>
+    }
+    {userName &&
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <RoomsContainer />
+      <MessagesContainer />
     </>
+    }
+    </div>
   )
 }
 
