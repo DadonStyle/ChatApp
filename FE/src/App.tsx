@@ -1,11 +1,12 @@
-import { useRef, useEffect } from 'react';
-import './App.css'
-import { useSockets } from './socketContext/socket.context';
-import RoomsContainer from './containers/Rooms';
-import MessagesContainer from './containers/Messages';
+import { useRef, useEffect } from "react";
+import { useSockets } from "./socketContext/socket.context";
+import RoomsContainer from "./containers/Rooms/Rooms";
+import MessagesContainer from "./containers/Messages/Messages";
+import { Login } from "./containers/Login/Login";
+import S from "./styled";
 
 function App() {
-  const { socket, userName, setUserName  } = useSockets();
+  const { userName, setUserName } = useSockets();
   const userNameRef = useRef<any>(null);
 
   const handleSetUserName = () => {
@@ -16,28 +17,30 @@ function App() {
     setUserName(userNameInput);
 
     localStorage.setItem("user", userNameInput);
-  }
-
-  useEffect(() => {
-    if (userNameRef) userNameRef.current.value = localStorage.getItem('user') ?? ''
-  }, [])
+  };
 
   return (
-    <div>
-    {!userName &&
-    <div>
-      <input type='text' placeholder='User Name' ref={userNameRef} />
-      <button type='submit' onClick={handleSetUserName}>Save</button>
-    </div>
-    }
-    {userName &&
-    <>
-      <RoomsContainer />
-      <MessagesContainer />
-    </>
-    }
-    </div>
-  )
+    <S.Wrapper>
+      {!userName && (
+        <div>
+          <Login
+            userNameRef={userNameRef}
+            handleSetUserName={handleSetUserName}
+          />
+        </div>
+      )}
+      {userName && (
+        <>
+          <S.SideBarWrapper>
+            <RoomsContainer />
+          </S.SideBarWrapper>
+          <S.BodyWrapper>
+            <MessagesContainer />
+          </S.BodyWrapper>
+        </>
+      )}
+    </S.Wrapper>
+  );
 }
 
-export default App
+export default App;

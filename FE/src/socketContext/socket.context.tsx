@@ -1,69 +1,73 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import { io, Socket } from 'socket.io-client';
-import { SOCKET_URL } from '../config/default';
-import EVENTS from '../config/events';
-import { toast } from 'react-toastify';
+import { createContext, useContext, useState, useEffect } from "react";
+import { io, Socket } from "socket.io-client";
+import { SOCKET_URL } from "../config/default";
+import EVENTS from "../config/events";
+import { toast } from "react-toastify";
+import { getFromLocalStorage } from "../util/helper";
+import { useDocumentTitleChange } from "../hooks/useDocumentTitleChange";
 
 interface RoomMessage {
-    roomId?: string,
-    message: string,
-    userName: string,
-    time?: string
+  roomId?: string;
+  message: string;
+  userName: string;
+  time?: string;
 }
 
 interface Context {
-    socket: Socket;
-    userName?: string;
-    setUserName: Function;
-    roomId?: string;
-    rooms: Record<string, { name: string }>;
-    messages?: Array<RoomMessage>;
-    setMessages: Function;
+  socket: Socket;
+  userName?: string;
+  setUserName: Function;
+  roomId?: string;
+  rooms: Record<string, { name: string }>;
+  messages?: Array<RoomMessage>;
+  setMessages: Function;
 }
 
 const socket = io(SOCKET_URL);
 
 const SocketContext = createContext<Context>({
-    socket,
-    setUserName: () => false,
-    rooms: {},
-    messages: [],
-    setMessages: () => false,
+  socket,
+  setUserName: () => false,
+  rooms: {},
+  messages: [],
+  setMessages: () => false,
 });
 
 const SocketsProvider = (props: any) => {
-    const [userName, setUserName] = useState('');
-    const [roomId, setRoomId] = useState('');
-    const [rooms, setRooms] = useState({});
-    const [messages, setMessages] = useState<Array<any>>([]);
+  const [userName, setUserName] = useState(() =>
+    getFromLocalStorage("user", "")
+  );
+  const [roomId, setRoomId] = useState("");
+  const [rooms, setRooms] = useState({});
+  const [messages, setMessages] = useState<Array<any>>([]);
 
-    useEffect(() => {
-        window.onfocus = () => {
-            document.title = 'Chat App';
-        }
-    }, [])
+  useDocumentTitleChange("Chat App");
 
-    socket.on("connect", () => {
-    });
+  socket.on("connect", () => {});
 
-    socket.on(EVENTS.SERVER.ROOMS, (value) => {
-        setRooms(value);
-    });
+  socket.on(EVENTS.SERVER.ROOMS, (value) => {
+    setRooms(value);
+  });
 
-    socket.on(EVENTS.SERVER.JOINED_ROOM, (value) => {
-        setRoomId(value);
+  socket.on(EVENTS.SERVER.JOINED_ROOM, (value) => {
+    setRoomId(value);
 
-        setMessages([]);
-    });
+    setMessages([]);
+  });
 
-    socket.on(EVENTS.SERVER.ROOM_MESSAGE, ({ message, userName, time }: RoomMessage) => {
-        if (!document.hasFocus()) {
-            document.title = "New message..."
-        }
-        setMessages([...messages || [], { message, userName, time }]);
-    });
+  socket.on(
+    EVENTS.SERVER.ROOM_MESSAGE,
+    ({ message, userName, time }: RoomMessage) => {
+      if (!document.hasFocus()) {
+        document.title = "New message...";
+      }
+      setMessages([...(messages || []), { message, userName, time }]);
+    }
+  );
 
-    return <SocketContext.Provider value={{
+  return (
+    <SocketContext.Provider
+      value={{
         socket,
         userName,
         setUserName,
@@ -71,8 +75,11 @@ const SocketsProvider = (props: any) => {
         rooms,
         messages,
         setMessages,
-    }} {...props} />
-}
+      }}
+      {...props}
+    />
+  );
+};
 
 export const useSockets = () => useContext(SocketContext);
 
