@@ -1,6 +1,6 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import './App.css'
-import { useSockets } from './context/socket.context';
+import { useSockets } from './socketContext/socket.context';
 import RoomsContainer from './containers/Rooms';
 import MessagesContainer from './containers/Messages';
 
@@ -17,6 +17,10 @@ function App() {
 
     localStorage.setItem("user", userNameInput);
   }
+
+  useEffect(() => {
+    if (userNameRef) userNameRef.current.value = localStorage.getItem('user') ?? ''
+  }, [])
 
   return (
     <div>

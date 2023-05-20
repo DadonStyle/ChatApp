@@ -7,10 +7,12 @@ const EVENTS = {
     CLIENT: {
         CREATE_ROOM: 'CREATE_ROOM',
         SEND_ROOM_MESSAGE: 'SEND_ROOM_MESSAGE',
+        JOIN_ROOM: 'JOIN_ROOM'
     },
     SERVER: {
         ROOMS: 'ROOMS',
-        JOINED_ROOM: 'JOINED_ROOM'
+        JOINED_ROOM: 'JOINED_ROOM',
+        ROOM_MESSAGE: 'ROOM_MESSAGE'
     }
 }
 
@@ -21,8 +23,8 @@ const socket = ({ io }: { io: Server }) => {
 
     io.on(EVENTS.conenction, (socket: Socket) => {
         logger.info(`User connected ${socket.id}`)
+        /* when a user creates a new room */
         socket.on(EVENTS.CLIENT.CREATE_ROOM, ({roomName}) => {
-            console.log({roomName})
             // create a roomId
             const roomId = nanoid();
 
@@ -42,7 +44,22 @@ const socket = ({ io }: { io: Server }) => {
             // emit event back the room creator saying they have joined a room
             socket.emit(EVENTS.SERVER.JOINED_ROOM, roomId);
         })
+        /* when a user sends a room message */
+        socket.on(EVENTS.CLIENT.SEND_ROOM_MESSAGE, ({ roomId, message, userName }) => {
+            const date = new Date();
+
+            socket.to(roomId).emit(EVENTS.SERVER.ROOM_MESSAGE, {
+                message, userName, time: `${date.getHours()}:${date.getMinutes()}}`
+            })
+        })
+        /* when a user joins a room */
+        socket.on(EVENTS.CLIENT.JOIN_ROOM, (roomId) => {
+            socket.join(roomId);
+            socket.emit(EVENTS.SERVER.JOINED_ROOM, roomId);
+        })
     })
+
+    
 }
 
 export default socket;

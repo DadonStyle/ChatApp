@@ -1,5 +1,5 @@
-import React, { useRef } from 'react'
-import { useSockets } from '../context/socket.context';
+import React, { useEffect, useRef } from 'react'
+import { useSockets } from '../socketContext/socket.context';
 import EVENTS from '../config/events';
 
 const RoomsContainer = () => {
@@ -19,14 +19,20 @@ const RoomsContainer = () => {
         newRoomName.current.value = ""
     }
 
+    const handleOnRoomClick = (key: any) => {
+        if (key === roomId) return;
+        
+        socket.emit(EVENTS.CLIENT.JOIN_ROOM, key)
+    }
+
     return (
         <nav>
             <div>
                 <input placeholder='Room name' ref={newRoomName} />
                 <button type='submit' onClick={handleCreateRoom}>CREATE ROOM</button>
             </div>
-            {Object.keys(rooms).map((key) => {
-                return <div>{rooms[key].name}</div>
+            {Object.keys(rooms).map((key, index) => {
+                return <div key={index}>Join <button disabled={key === roomId} onClick={() => handleOnRoomClick(key)}>{rooms[key].name}</button></div>
             })}
         </nav>
     )

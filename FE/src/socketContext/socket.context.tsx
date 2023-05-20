@@ -1,7 +1,15 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { SOCKET_URL } from '../config/default';
 import EVENTS from '../config/events';
+import { toast } from 'react-toastify';
+
+interface RoomMessage {
+    roomId?: string,
+    message: string,
+    userName: string,
+    time?: string
+}
 
 interface Context {
     socket: Socket;
@@ -9,7 +17,7 @@ interface Context {
     setUserName: Function;
     roomId?: string;
     rooms: Record<string, { name: string }>;
-    messages?: Array<any>;
+    messages?: Array<RoomMessage>;
     setMessages: Function;
 }
 
@@ -27,10 +35,15 @@ const SocketsProvider = (props: any) => {
     const [userName, setUserName] = useState('');
     const [roomId, setRoomId] = useState('');
     const [rooms, setRooms] = useState({});
-    const [messages, setMessages] = useState([]);
+    const [messages, setMessages] = useState<Array<any>>([]);
+
+    useEffect(() => {
+        window.onfocus = () => {
+            document.title = 'Chat App';
+        }
+    }, [])
 
     socket.on("connect", () => {
-        console.log(socket.id); // true
     });
 
     socket.on(EVENTS.SERVER.ROOMS, (value) => {
@@ -40,8 +53,14 @@ const SocketsProvider = (props: any) => {
     socket.on(EVENTS.SERVER.JOINED_ROOM, (value) => {
         setRoomId(value);
 
-
         setMessages([]);
+    });
+
+    socket.on(EVENTS.SERVER.ROOM_MESSAGE, ({ message, userName, time }: RoomMessage) => {
+        if (!document.hasFocus()) {
+            document.title = "New message..."
+        }
+        setMessages([...messages || [], { message, userName, time }]);
     });
 
     return <SocketContext.Provider value={{
