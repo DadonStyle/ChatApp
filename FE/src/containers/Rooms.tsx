@@ -3,6 +3,7 @@ import { useSockets } from '../context/socket.context';
 import EVENTS from '../config/events';
 
 const RoomsContainer = () => {
+
     const { socket, roomId, rooms } = useSockets();
     const newRoomName = useRef<any>(null);
 
@@ -18,13 +19,15 @@ const RoomsContainer = () => {
         newRoomName.current.value = ""
     }
 
-
     return (
         <nav>
             <div>
                 <input placeholder='Room name' ref={newRoomName} />
                 <button type='submit' onClick={handleCreateRoom}>CREATE ROOM</button>
             </div>
+            {Object.keys(rooms).map((key) => {
+                return <div>{rooms[key].name}</div>
+            })}
         </nav>
     )
 }

@@ -1,7 +1,12 @@
 const EVENTS = {
-    conenction: 'conenction',
+    conenction: 'connect',
     CLIENT: {
-        CREATE_ROOM: 'CREATE_ROOM'
+        CREATE_ROOM: 'CREATE_ROOM',
+        SEND_ROOM_MESSAGE: 'SEND_ROOM_MESSAGE',
+    },
+    SERVER: {
+        ROOMS: 'ROOMS',
+        JOINED_ROOM: 'JOINED_ROOM'
     }
 }
 
