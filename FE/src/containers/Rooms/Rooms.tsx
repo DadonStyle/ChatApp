@@ -14,7 +14,6 @@ const RoomsContainer = () => {
   };
 
   if (Object.keys(rooms).length < 1) {
-    console.log(socket);
     return <div>Waiting for room creation</div>;
   }
 
