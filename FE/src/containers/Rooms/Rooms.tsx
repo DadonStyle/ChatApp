@@ -20,6 +20,7 @@ const RoomsContainer = () => {
   return (
     <nav>
       <S.Wrapper>
+        <></>
         Rooms:
         {Object.keys(rooms).map((key, index) => {
           return (
