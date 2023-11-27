@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 let S = {};
 
@@ -7,6 +7,9 @@ const Wrapper = styled.div`
   flex-direction: column;
   flex-wrap: wrap;
   gap: 10px;
+  width: 100%;
+  background-color: #e3e8e7;
+  min-height: 100vh;
   width: 100%;
   p {
     display: flex;

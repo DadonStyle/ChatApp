@@ -1,9 +1,9 @@
-import { useRef, useEffect } from "react";
-import { useSockets } from "./socketContext/socket.context";
-import RoomsContainer from "./containers/Rooms/Rooms";
-import MessagesContainer from "./containers/Messages/Messages";
-import { Login } from "./containers/Login/Login";
-import S from "./styled";
+import { useRef, useEffect } from 'react';
+import { useSockets } from './socketContext/socket.context';
+import RoomsContainer from './modules/Rooms/Rooms';
+import MessagesContainer from './modules/Messages/Messages';
+import { Login } from './modules/Login/Login';
+import S from './styled';
 
 function App() {
   const { userName, setUserName } = useSockets();
@@ -16,18 +16,16 @@ function App() {
     }
     setUserName(userNameInput);
 
-    localStorage.setItem("user", userNameInput);
+    localStorage.setItem('user', userNameInput);
   };
 
   return (
     <S.Wrapper>
       {!userName && (
-        <div>
-          <Login
-            userNameRef={userNameRef}
-            handleSetUserName={handleSetUserName}
-          />
-        </div>
+        <Login
+          userNameRef={userNameRef}
+          handleSetUserName={handleSetUserName}
+        />
       )}
       {userName && (
         <>

@@ -1,20 +1,19 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 let S = {};
 
 const Wrapper = styled.div`
   display: flex;
-  flex-direction: row;
-  justify-content: left;
+  justify-content: center;
   align-items: center;
+  min-width: 100vw;
+  min-height: 100vh;
 `;
 
 const SideBarWrapper = styled.div`
   display: flex;
-  position: absolute;
   justify-content: center;
   align-items: center;
-  left: 0;
   height: 100%;
   background-color: wheat;
   width: 250px;

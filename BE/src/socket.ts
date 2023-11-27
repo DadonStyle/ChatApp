@@ -1,27 +1,27 @@
-import { Server, Socket } from "socket.io";
-import logger from "./utills/logger";
-import { nanoid } from "nanoid";
+import { Server, Socket } from 'socket.io';
+import logger from './utills/logger';
+import { nanoid } from 'nanoid';
 
 const EVENTS = {
-  conenction: "connect",
+  connection: 'connect',
   CLIENT: {
-    CREATE_ROOM: "CREATE_ROOM",
-    SEND_ROOM_MESSAGE: "SEND_ROOM_MESSAGE",
-    JOIN_ROOM: "JOIN_ROOM",
+    CREATE_ROOM: 'CREATE_ROOM',
+    SEND_ROOM_MESSAGE: 'SEND_ROOM_MESSAGE',
+    JOIN_ROOM: 'JOIN_ROOM',
   },
   SERVER: {
-    ROOMS: "ROOMS",
-    JOINED_ROOM: "JOINED_ROOM",
-    ROOM_MESSAGE: "ROOM_MESSAGE",
+    ROOMS: 'ROOMS',
+    JOINED_ROOM: 'JOINED_ROOM',
+    ROOM_MESSAGE: 'ROOM_MESSAGE',
   },
 };
 
 const rooms: Record<string, { name: string }> = {};
 
 const socket = ({ io }: { io: Server }) => {
-  logger.info("Socket enabled");
+  logger.info('Socket enabled');
 
-  io.on(EVENTS.conenction, (socket: Socket) => {
+  io.on(EVENTS.connection, (socket: Socket) => {
     logger.info(`User connected ${socket.id}`);
     // emit back to the room creator with all the rooms
     socket.emit(EVENTS.SERVER.ROOMS, rooms);
